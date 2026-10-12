@@ -10,7 +10,10 @@ export const SELECTION = {
    *   T1 官方一手（官网、官方博客、机构）· T1_5 官方账号、准官方创作者 · T2 媒体与个人
    * 分级 EXCLUDE_MP 以及这里没有列出的分级，不参与精选评分（只进“全部动态”）。
    */
-  thresholds: { T1: 60, T1_5: 65, T2: 76 } as Record<string, number>,
+  // 2026-10 校准：本站按「行业信号 + 编码/通道论文」口味标注 104 条（.data/gold.jsonl），
+  // 存储/量子专科媒体与 arXiv 类信源的日常动态与论文集中在 20–50 分；T2_SPEC/T2 按样本
+  // 联合扫描下调（eval-selection 报告 v3：SPEC20/T2 50 recall≈0.59 prec≈0.89）。
+  thresholds: { T1: 60, T1_5: 65, T2: 50, T2_SPEC: 20 } as Record<string, number>,
   /**
    * 没入选、但平均分高于这个数的资料，也用精选的写法（内容理解：标题、摘要、推荐理由）来写，
    * 其余用更便宜的“标题摘要翻译”。
