@@ -2,13 +2,13 @@
   "groups": [
     {
       "key": "company",
-      "name": "公司与模型",
-      "blurb": "按厂商追踪模型、产品与公司动态"
+      "name": "公司与机构",
+      "blurb": "按厂商追踪模型、产品、存储与量子领域动态"
     },
     {
       "key": "field",
       "name": "技术方向",
-      "blurb": "按技术领域深挖：Agent、多模态、具身智能……"
+      "blurb": "按技术领域深挖：Agent、多模态、HAMR、量子纠错……"
     },
     {
       "key": "genre",
@@ -39,7 +39,7 @@
       "aliases": [
         "DeepMind"
       ],
-      "definition": "Google 与 DeepMind 的 AI 动态：Gemini 系列、Veo 视频模型、研究成果与产品生态的持续追踪。"
+      "definition": "Google 与 DeepMind 的动态：Gemini 系列、Veo 视频模型、量子研究成果与产品生态的持续追踪。"
     },
     {
       "slug": "deepseek",
@@ -95,14 +95,14 @@
       "name": "Microsoft / Copilot",
       "group": "company",
       "entityId": "microsoft",
-      "definition": "微软的 AI 布局：Copilot 全家桶、Azure AI 基础设施与 OpenAI 合作关系的持续追踪。"
+      "definition": "微软的动态：Copilot 全家桶、Azure AI 基础设施、Azure Quantum 与 OpenAI 合作关系。"
     },
     {
       "slug": "nvidia",
       "name": "NVIDIA 英伟达",
       "group": "company",
       "entityId": "nvidia",
-      "definition": "英伟达的 AI 芯片与生态动态：GPU 新品、CUDA 生态、机器人平台与 AI 算力市场的风向。"
+      "definition": "英伟达的芯片与生态动态：GPU 新品、CUDA 生态、机器人平台与 AI 算力市场的风向。"
     },
     {
       "slug": "hugging-face",
@@ -124,6 +124,51 @@
       "group": "company",
       "entityId": "openrouter",
       "definition": "OpenRouter 模型路由平台动态：新模型上架、用量排行与开发者选型的真实市场信号。"
+    },
+    {
+      "slug": "ibm",
+      "name": "IBM",
+      "group": "company",
+      "entityId": "ibm",
+      "definition": "IBM 的前沿计算动态：IBM Quantum 量子计算机与纠错路线、存储与企业计算的持续追踪。"
+    },
+    {
+      "slug": "seagate",
+      "name": "Seagate 希捷",
+      "group": "company",
+      "entityId": "seagate",
+      "definition": "希捷的存储动态：HAMR（Mozaic）平台进展、硬盘产品线与产能、机械盘市场风向。"
+    },
+    {
+      "slug": "western-digital",
+      "name": "Western Digital",
+      "group": "company",
+      "entityId": "wdc",
+      "aliases": [
+        "SanDisk"
+      ],
+      "definition": "西部数据与闪迪的存储动态：ePMR/UltraSMR 硬盘、NAND 与闪存产品、介质技术路线。"
+    },
+    {
+      "slug": "samsung",
+      "name": "Samsung 三星",
+      "group": "company",
+      "entityId": "samsung",
+      "definition": "三星半导体与存储动态：NAND/DRAM 工艺节点、QLC 与 V-NAND 产品、存储业务风向。"
+    },
+    {
+      "slug": "ionq",
+      "name": "IonQ",
+      "group": "company",
+      "entityId": "ionq",
+      "definition": "IonQ 的离子阱量子计算动态：机型迭代、量子网络与商业化进展的追踪。"
+    },
+    {
+      "slug": "quantinuum",
+      "name": "Quantinuum",
+      "group": "company",
+      "entityId": "quantinuum",
+      "definition": "Quantinuum 的离子阱量子计算动态：H 系列、纠错实验与量子化学应用的追踪。"
     },
     {
       "slug": "agent",
@@ -253,6 +298,63 @@
       "definition": "模型连接外部世界的协议与实践：MCP 生态、function calling、工具链集成的动态。"
     },
     {
+      "slug": "magnetic-storage",
+      "name": "磁记录与 HDD",
+      "group": "field",
+      "tags": [
+        "HAMR",
+        "存储介质"
+      ],
+      "definition": "机械硬盘与磁记录的最前线：HAMR/MAMR 面密度推进、盘片磁头与通道技术、SMR 叠瓦与可靠性。"
+    },
+    {
+      "slug": "flash-ssd",
+      "name": "闪存与 SSD",
+      "group": "field",
+      "tags": [
+        "闪存/SSD"
+      ],
+      "definition": "NAND 与固态存储：QLC/PLC 工艺、主控与接口（NVMe/PCIe/CXL）、企业级 SSD 与耐久性。"
+    },
+    {
+      "slug": "archive-media",
+      "name": "光存储与归档",
+      "group": "field",
+      "tags": [
+        "光存储",
+        "归档"
+      ],
+      "definition": "数据长期保存：光盘/玻璃等多维光存储、磁带库（LTO）、DNA 存储与归档介质进展。"
+    },
+    {
+      "slug": "quantum-hardware",
+      "name": "量子硬件",
+      "group": "field",
+      "tags": [
+        "量子硬件"
+      ],
+      "definition": "量子比特硬件的进展：超导、离子阱、中性原子、光量子各路线的规模与保真度里程碑。"
+    },
+    {
+      "slug": "quantum-error-correction",
+      "name": "量子纠错",
+      "group": "field",
+      "tags": [
+        "量子纠错"
+      ],
+      "definition": "通往容错量子计算的关键：逻辑量子比特、表面码与 qLDPC 码、纠错实验与阈值突破。"
+    },
+    {
+      "slug": "quantum-software",
+      "name": "量子算法与云",
+      "group": "field",
+      "tags": [
+        "量子算法",
+        "量子云"
+      ],
+      "definition": "量子计算的应用层：算法与基准、量子云平台、编程框架与行业演示。"
+    },
+    {
       "slug": "model-releases",
       "name": "模型发布",
       "group": "genre",
@@ -277,7 +379,7 @@
       "tags": [
         "论文/研究"
       ],
-      "definition": "值得读的 AI 论文与研究成果：架构创新、训练方法、能力测量与理论进展的精选解读。"
+      "definition": "值得读的研究成果：AI 架构创新、记录物理与介质实验、量子纠错理论进展的精选解读。"
     },
     {
       "slug": "benchmarks",
@@ -286,7 +388,7 @@
       "tags": [
         "评测/基准"
       ],
-      "definition": "模型到底谁强：Benchmark 成绩、评测方法论争议与排行榜变化的持续记录。"
+      "definition": "谁更强：模型 Benchmark 成绩、存储介质与可靠性评测、量子硬件对比的持续记录。"
     },
     {
       "slug": "tutorials",
@@ -295,7 +397,7 @@
       "tags": [
         "教程/实践"
       ],
-      "definition": "拿来就能用的实操内容：提示词技巧、工作流搭建、工具用法与踩坑经验。"
+      "definition": "拿来就能用的实操内容：提示词技巧、存储部署与数据管理、量子编程入门与踩坑经验。"
     },
     {
       "slug": "opinions",
@@ -313,7 +415,7 @@
       "tags": [
         "现象/趋势"
       ],
-      "definition": "正在发生的行业级变化：使用习惯迁移、能力涌现、社会影响与市场格局的观察。"
+      "definition": "正在发生的行业级变化：使用习惯迁移、存储介质更替、量子路线图与社会影响的观察。"
     },
     {
       "slug": "industry",
@@ -322,7 +424,7 @@
       "tags": [
         "行业动态"
       ],
-      "definition": "AI 行业的商业脉搏：融资并购、人事变动、合作与竞争、政策与市场信号。"
+      "definition": "三个领域的商业脉搏：融资并购、人事变动、合作与竞争、扩产与市场信号。"
     },
     {
       "slug": "policy",
@@ -331,7 +433,7 @@
       "tags": [
         "政策/监管"
       ],
-      "definition": "AI 相关政策法规与政府监管动态：立法进展、出口管制与全球治理框架的追踪。"
+      "definition": "政策法规与监管动态：AI 立法与出口管制、数据主权与存储合规、量子技术国家战略。"
     }
   ]
 }

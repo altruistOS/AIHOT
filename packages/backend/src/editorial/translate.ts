@@ -89,7 +89,7 @@ async function translateBatch(articleId: string, revision: number, index: number
     schema: Output,
     temperature: 0.2,
     maxTokens: Math.min(8000, Math.ceil(parts.join("").length * 1.2) + 400),
-    timeoutMs: 180_000,
+    timeoutMs: 600_000,
     attemptTag,
   });
   return { translated: res.data.t.length === parts.length ? res.data.t : null, receiptId: res.receiptId };
@@ -284,7 +284,7 @@ export async function translateQuotes(opts: { days?: number; limit?: number; bud
         const res = await chatJson({
           model: await modelFor("translate"), purpose: "translate_quoted", subject: `quote:${r.tweet_id}`, promptVersion: TRANSLATE_PROMPT_VERSION,
           system: SYSTEM_POST, user: JSON.stringify({ segments: [r.text] }), schema: Output, temperature: 0.2,
-          maxTokens: Math.min(4000, Math.ceil(r.text.length * 1.5) + 200), timeoutMs: 120_000,
+          maxTokens: Math.min(4000, Math.ceil(r.text.length * 1.5) + 200), timeoutMs: 600_000,
         });
         receiptId = res.receiptId;
         zh = res.data.t.length === 1 ? res.data.t[0]!.trim() : null;

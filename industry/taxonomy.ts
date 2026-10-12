@@ -13,7 +13,9 @@
 export const CATEGORIES = [
   { key: "ai-models", label: "模型", feedLabel: "AI 模型", section: "模型发布/更新", guide: "模型本身的发布、版本、权重开放、能力或价格变化，以及既有榜单上的模型成绩。公布一次跑分不是发布新基准，也不是教程。" },
   { key: "ai-products", label: "产品", feedLabel: "AI 产品", section: "产品发布/更新", guide: "可使用的 AI 产品、功能、应用、工具、API、平台和工程组件的发布更新。模型厂商发布的推理框架、算子库、硬件适配组件仍是产品，不能因为厂商名归成模型。" },
-  { key: "industry", label: "行业", feedLabel: "行业动态", section: "行业动态", guide: "已发生的公司经营、融资并购、人事、合作、诉讼、政策、真实安全事故及调查进展。新闻由当事人发帖、带有态度，也不因此变成观点。" },
+  { key: "storage", label: "数据存储", feedLabel: "数据存储", section: "数据存储", guide: "数据存储技术与产品的进展：硬盘（HAMR/MAMR 等磁记录）、固态与闪存、磁带与归档、光盘/玻璃等新介质与记录物理、存储介质材料、盘片磁头与通道，以及存储系统与接口。厂商财报、并购、人事归行业；纯市场销量盘点归行业。" },
+  { key: "quantum", label: "量子计算", feedLabel: "量子计算", section: "量子计算", guide: "量子技术与量子计算的进展：量子比特硬件与规模里程碑、量子纠错与逻辑量子比特、量子算法与软件、量子云平台、量子网络与量子传感。量子公司的融资并购归行业；不涉及量子技术的普通物理新闻不归这里。" },
+  { key: "industry", label: "行业", feedLabel: "行业动态", section: "行业动态", guide: "已发生的公司经营、融资并购、人事、合作、诉讼、政策、真实安全事故及调查进展（AI、数据存储、量子计算三个领域通用）。新闻由当事人发帖、带有态度，也不因此变成观点。" },
   { key: "paper", label: "论文", feedLabel: "论文", section: "论文研究", guide: "以新研究方法、实验设计与发现为核心的论文、技术报告、新基准或研究数据集。系统性红队实验属于研究；既有榜单成绩归模型，真实事故的新闻调查归行业。" },
   { key: "tip", label: "教程", section: "技巧与观点", guide: "读者可以照着使用的方法、提示词、工具用法、工程实践复盘与技术讲解。重点是可复用的做法；单纯发布工具归产品，只有态度和预测而无做法归观点。", commentary: true },
   { key: "opinion", label: "观点", section: "技巧与观点", guide: "重点是作者的解释、判断、主张、预测、评论或访谈观点。讨论市场不自动归行业，作者是名人不自动归观点。", commentary: true },
@@ -27,7 +29,7 @@ export const CATEGORIES = [
 export const RELEASE: { category: string; tag: string; unit: string } | null = { category: "ai-models", tag: "模型发布", unit: "个新模型" };
 
 /** 周报月报的总述可以直接写、不必在报道里找到出处的行业通用词（小写）。站名会自动算进去。 */
-export const PLAIN_TERMS: readonly string[] = ["ai", "api", "llm", "gpu", "agi", "ceo", "ipo"];
+export const PLAIN_TERMS: readonly string[] = ["ai", "api", "llm", "gpu", "agi", "ceo", "ipo", "hamr", "ssd", "hdd", "nvme", "qubit", "ecc", "dram", "lto", "tb", "pb"];
 
 /**
  * 内容理解一步给每篇资料判的“内容类型”（写在 prompts/content-understanding.md 里，改了类型要同步改那份提示词）。
@@ -46,10 +48,11 @@ export const CATEGORY_TAGS = [
 /** 可选的主题标签。 */
 export const TOPIC_TAGS = [
   "Agent", "编码", "推理", "多模态", "语音", "视频", "图像生成", "RAG", "端侧", "数据/训练", "搜索", "部署/工程", "开源生态", "具身智能", "MCP/工具调用",
+  "存储介质", "HAMR", "光存储", "闪存/SSD", "归档", "量子硬件", "量子纠错", "量子算法", "量子云",
 ] as const;
 
 /** 可选的实体标签（公司、机构、平台）。 */
-export const ENTITY_TAGS = ["OpenAI", "Anthropic", "DeepSeek", "DeepMind", "Google", "Meta", "Microsoft", "xAI", "Hugging Face", "GitHub", "arXiv"] as const;
+export const ENTITY_TAGS = ["OpenAI", "Anthropic", "DeepSeek", "DeepMind", "Google", "Meta", "Microsoft", "xAI", "Hugging Face", "GitHub", "arXiv", "IBM", "Seagate", "Western Digital", "Samsung", "Micron", "Toshiba", "Kioxia", "IonQ", "Quantinuum", "Rigetti", "D-Wave", "PsiQuantum", "QuEra", "Pasqal"] as const;
 
 /** 模型常写的近义词，统一成词表里的写法。 */
 export const TAG_SYNONYMS: Readonly<Record<string, string>> = {
@@ -90,6 +93,20 @@ export const ENTITIES: Record<string, { name: string; displayTag: string | null;
   "hugging-face": { name: "Hugging Face", displayTag: "Hugging Face", aliases: ["Hugging Face"], otherNames: ["HuggingFace"] },
   cursor: { name: "Cursor", displayTag: null, aliases: ["Cursor", "Anysphere"] },
   openrouter: { name: "OpenRouter", displayTag: null, aliases: ["OpenRouter"] },
+  ibm: { name: "IBM", displayTag: "IBM", aliases: ["IBM", "国际商业机器"], otherNames: ["IBM Quantum", "IBM Research"] },
+  seagate: { name: "Seagate 希捷", displayTag: null, aliases: ["Seagate", "希捷"] },
+  wdc: { name: "Western Digital", displayTag: null, aliases: ["Western Digital", "西部数据", "WD"], otherNames: ["SanDisk 闪迪", "WDC"] },
+  samsung: { name: "Samsung 三星", displayTag: null, aliases: ["Samsung", "三星"], otherNames: ["Samsung SDS"] },
+  micron: { name: "Micron 美光", displayTag: null, aliases: ["Micron", "美光"], otherNames: ["Crucial 英睿达"] },
+  toshiba: { name: "Toshiba 东芝", displayTag: null, aliases: ["Toshiba", "东芝"] },
+  kioxia: { name: "Kioxia 铠侠", displayTag: null, aliases: ["Kioxia", "铠侠"] },
+  ionq: { name: "IonQ", displayTag: null, aliases: ["IonQ"] },
+  quantinuum: { name: "Quantinuum", displayTag: null, aliases: ["Quantinuum"], otherNames: ["Honeywell Quantum"] },
+  rigetti: { name: "Rigetti", displayTag: null, aliases: ["Rigetti", "Rigetti Computing"] },
+  "d-wave": { name: "D-Wave", displayTag: null, aliases: ["D-Wave", "D-Wave Quantum"] },
+  psiquantum: { name: "PsiQuantum", displayTag: null, aliases: ["PsiQuantum"] },
+  quera: { name: "QuEra", displayTag: null, aliases: ["QuEra", "QuEra Computing"] },
+  pasqal: { name: "Pasqal", displayTag: null, aliases: ["Pasqal"] },
 };
 
 /**
@@ -110,6 +127,20 @@ export const IDENTITY_LEXICON: ReadonlyArray<{ id: string; name: string; pattern
   { id: "cursor", name: "Cursor", patterns: [/\bCursor\b/] },
   { id: "kimi", name: "Kimi / 月之暗面", patterns: [/\bkimi\b|月之暗面|\bmoonshot\s?ai\b/i] },
   { id: "openrouter", name: "OpenRouter", patterns: [/openrouter/i] },
+  { id: "seagate", name: "Seagate", patterns: [/seagate|希捷/i] },
+  { id: "wdc", name: "Western Digital", patterns: [/western\s?digital|\bwdc\b|西部数据/i] },
+  { id: "samsung", name: "Samsung", patterns: [/samsung|三星/i] },
+  { id: "micron", name: "Micron", patterns: [/micron|美光/i] },
+  { id: "toshiba", name: "Toshiba", patterns: [/toshiba|东芝/i] },
+  { id: "kioxia", name: "Kioxia", patterns: [/kioxia|铠侠/i] },
+  { id: "ibm", name: "IBM", patterns: [/\bIBM\b/i] },
+  { id: "ionq", name: "IonQ", patterns: [/\bIonQ\b/i] },
+  { id: "quantinuum", name: "Quantinuum", patterns: [/quantinuum/i] },
+  { id: "rigetti", name: "Rigetti", patterns: [/rigetti/i] },
+  { id: "d-wave", name: "D-Wave", patterns: [/\bD-Wave\b/i] },
+  { id: "psiquantum", name: "PsiQuantum", patterns: [/\bPsiQuantum\b/i] },
+  { id: "quera", name: "QuEra", patterns: [/\bQuEra\b/i] },
+  { id: "pasqal", name: "Pasqal", patterns: [/\bPasqal\b/i] },
   { id: "minimax", name: "MiniMax", patterns: [/minimax/i] },
   { id: "zhipu", name: "智谱 GLM", patterns: [/智谱|\bglm-?[4-9]/i] },
   { id: "hunyuan", name: "腾讯混元", patterns: [/混元|hunyuan/i] },
@@ -144,6 +175,16 @@ export const PUBLISHER_DOMAINS: ReadonlyArray<{ entityId: string; domains: reado
   { entityId: "qwen", domains: ["qwen.ai"] },
   { entityId: "cursor", domains: ["cursor.com"] },
   { entityId: "openrouter", domains: ["openrouter.ai"] },
+  { entityId: "ibm", domains: ["ibm.com"] },
+  { entityId: "seagate", domains: ["seagate.com"] },
+  { entityId: "wdc", domains: ["westerndigital.com", "wdc.com"] },
+  { entityId: "samsung", domains: ["samsung.com"] },
+  { entityId: "micron", domains: ["micron.com"] },
+  { entityId: "kioxia", domains: ["kioxia.com", "global.kioxia.com"] },
+  { entityId: "ionq", domains: ["ionq.com"] },
+  { entityId: "quantinuum", domains: ["quantinuum.com"] },
+  { entityId: "rigetti", domains: ["rigetti.com"] },
+  { entityId: "d-wave", domains: ["dwavesys.com"] },
 ];
 
 /** 原文里的这些写法也算提到了对应公司。 */

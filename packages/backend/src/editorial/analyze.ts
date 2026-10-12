@@ -67,9 +67,9 @@ export const UNDERSTAND_FLOOR = SELECTION.understandFloor;
  * registry adds top_p and thinking) and up to 180 s per call.
  */
 const SCORE_CALL: Record<string, { temperature: number; maxTokens: number; timeoutMs: number }> = {
-  "glm-5.3-flash-selection": { temperature: 1, maxTokens: 65_536, timeoutMs: 180_000 },
+  "glm-5.3-flash-selection": { temperature: 1, maxTokens: 65_536, timeoutMs: 600_000 },
 };
-const scoreCall = (model: string) => SCORE_CALL[model] ?? { temperature: 0.2, maxTokens: 1024, timeoutMs: 120_000 };
+const scoreCall = (model: string) => SCORE_CALL[model] ?? { temperature: 0.2, maxTokens: 1024, timeoutMs: 600_000 };
 
 /** The score prompt: the industry's taste (industry/prompts/selection-score.md). */
 export const SCORE_SYSTEM = promptText("selection-score");
@@ -347,7 +347,7 @@ export async function runUnderstand(a: AnalyzeInputArticle, opts: StepOpts = {})
     return chatJson({
       model, purpose: "understand_article", subject: subjectOf(a), promptVersion: PROMPT_VERSIONS.understand, system: UNDERSTAND_SYSTEM,
       user: image ? [{ type: "text", text }, image] : text, schema: UnderstandSchema, temperature: 0.2, maxTokens: 16_384,
-      timeoutMs: 180_000, attemptTag: tagged(opts.attemptTag, "understand"),
+      timeoutMs: 600_000, attemptTag: tagged(opts.attemptTag, "understand"),
     });
   };
   // Image input is opt-in: an unspecified capability must not become a paid provider probe.

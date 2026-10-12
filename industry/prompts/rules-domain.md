@@ -43,3 +43,7 @@
    - URL 原样
    - 数字+单位：8k context / 175B params / 3.5x speedup / $3 per M tokens / 99.9%
    - 金额、参数量、比例、区间必须保留原文的阿拉伯数字和单位；不要把 $10B-$100B 改写成“数百亿至数千亿美元”等中文数量词
+
+5. 【存储领域规则】以下缩写**一律保留英文**：HAMR / MAMR / SMR / BPM / PMR / TDMR / EPMR / NAND / SSD / HDD / NVMe / PCIe / SAS / SATA / ZNS / CXL / LTO / OCP / QLC / TLC / PLC / 3D XPoint；中文优先并括注英文：热辅助磁记录（HAMR）、位图案化介质（BPM）、叠瓦式磁记录（SMR）、纠错码（ECC）；LDPC / Polar / Turbo / BCH / RS 等码名保留英文。面密度单位 TB/in² 一字不改。
+6. 【量子领域规则】quantum supremacy 译“量子优越性”，quantum advantage 译“量子优势”，logical qubit 译“逻辑量子比特”，physical qubit 译“物理量子比特”，error correction 译“量子纠错”（缩写 QEC 保留），superconducting qubit 译“超导量子比特”，trapped-ion 译“离子阱”，neutral atom 译“中性原子”，photonic 译“光量子”，annealing 译“量子退火”。公司名保留英文：IonQ / Quantinuum / Rigetti / D-Wave / PsiQuantum / QuEra / Pasqal / IQM / Atom Computing / 玻色量子 / 本源量子。
+7. 【存储与量子通用】代码、命令、URL、型号、参数与指标一字不改：容量（如 40TB、120PB）、面密度、保真度（如 99.9%）、相干时间（微秒/毫秒）、MTBF、误码率（如 1E-15）。不要把 “40TB” 改写成“40 太字节”。
