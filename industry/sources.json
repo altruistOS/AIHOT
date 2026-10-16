@@ -379,7 +379,7 @@
       "tier": "T2",
       "owner_entity_id": null,
       "participation_mode": "editorial",
-      "interval_minutes": 120,
+      "interval_minutes": 60,
       "tags": [
         "媒体"
       ],
@@ -399,7 +399,7 @@
       "tier": "T2",
       "owner_entity_id": null,
       "participation_mode": "editorial",
-      "interval_minutes": 180,
+      "interval_minutes": 120,
       "tags": [
         "媒体"
       ],
@@ -498,7 +498,7 @@
       },
       "tier": "T2",
       "participation_mode": "editorial",
-      "interval_minutes": 120,
+      "interval_minutes": 60,
       "tags": [
         "硬件"
       ],
@@ -517,7 +517,7 @@
       },
       "tier": "T2",
       "participation_mode": "editorial",
-      "interval_minutes": 120,
+      "interval_minutes": 60,
       "tags": [
         "硬件"
       ],
@@ -536,7 +536,7 @@
       },
       "tier": "T2",
       "participation_mode": "editorial",
-      "interval_minutes": 180,
+      "interval_minutes": 60,
       "tags": [
         "存储"
       ],
@@ -555,7 +555,7 @@
       },
       "tier": "T1",
       "participation_mode": "editorial",
-      "interval_minutes": 360,
+      "interval_minutes": 120,
       "tags": [
         "组织"
       ],
@@ -574,7 +574,7 @@
       },
       "tier": "T2",
       "participation_mode": "editorial",
-      "interval_minutes": 720,
+      "interval_minutes": 120,
       "tags": [
         "论文"
       ],
@@ -593,7 +593,7 @@
       },
       "tier": "T2",
       "participation_mode": "editorial",
-      "interval_minutes": 720,
+      "interval_minutes": 120,
       "tags": [
         "论文"
       ],
