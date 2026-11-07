@@ -107,4 +107,7 @@ export function gate<T = void>() {
 export const tag = () => `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 7)}`;
 
 /** `seconds` after the site's edition time of a report kind on a Beijing date (EDITION_TIMES), so tests follow the site's schedule. */
-export const editionAt = (kind: keyof typeof EDITION_TIMES, date: string, seconds = 0) => new Date(beijingAt(date, EDITION_TIMES[kind]).getTime() + seconds * 1000);
+export const editionAt = (kind: keyof typeof EDITION_TIMES, date: string, seconds = 0) => {
+  const time = typeof EDITION_TIMES[kind] === "string" ? (EDITION_TIMES[kind] as string) : (EDITION_TIMES[kind] as string[]).at(-1)!;
+  return new Date(beijingAt(date, time).getTime() + seconds * 1000);
+};

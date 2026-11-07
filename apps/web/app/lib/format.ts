@@ -7,7 +7,8 @@ export function monthDay(date: string): string {
 
 /** "周六" of a calendar date (YYYY-MM-DD). */
 export function weekdayShort(date: string): string {
-  return beijingWeekday(date).replace("星期", "周");
+  // 日报期号 key 可能带时刻后缀（2026-10-14-19），日期部分取前 10 位。
+  return beijingWeekday(date.slice(0, 10)).replace("星期", "周");
 }
 
 export function relativeTime(iso: string, now = Date.now()): string {

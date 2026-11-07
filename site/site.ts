@@ -3,15 +3,16 @@
 // 域名不在这里：部署时用环境变量 SITE_URL 设置。
 
 /**
- * 日报、周报、月报什么时候出（北京时间，HH:mm）：日报收这个时间之前的 24 小时，周报在每个自然周之后的周一出，
- * 月报在每月 1 日出。排程、成刊时间窗口、缺期告警和所有提到时间的文案都读它（public/ 里的文件写占位
- * {{dailyTime}}、{{weeklyTime}}、{{monthlyTime}}）；排程每半小时检查一次，所以写整点或半点。
+ * 日报、周报、月报什么时候出（北京时间，HH:mm）：日报每天多期（数组，每期收上一期以来的滚动 24 小时，
+ * 已刊内容不重复），周报在每个自然周之后的周一出，月报在每月 1 日出。排程、成刊时间窗口、缺期告警和
+ * 所有提到时间的文案都读它（public/ 里的文件写占位 {{dailyTime}}、{{weeklyTime}}、{{monthlyTime}}）；
+ * 排程每半小时检查一次，所以写整点或半点。日报期号 key 为「日期-时」（如 2026-10-14-19）。
  */
-export const EDITION_TIMES = { daily: "08:00", weekly: "10:00", monthly: "10:30" };
+export const EDITION_TIMES = { daily: ["07:00", "12:00", "19:00"], weekly: "10:00", monthly: "10:30" };
 
-/** “每天 08:00”“每周一 10:00”“每月 1 日 10:30”：写进句子里的出刊时间。 */
+/** “每天 07:00、12:00、19:00”“每周一 10:00”“每月 1 日 10:30”：写进句子里的出刊时间。 */
 export const EDITION_WHEN = {
-  daily: `每天 ${EDITION_TIMES.daily}`,
+  daily: `每天 ${EDITION_TIMES.daily.join("、")}`,
   weekly: `每周一 ${EDITION_TIMES.weekly}`,
   monthly: `每月 1 日 ${EDITION_TIMES.monthly}`,
 };
@@ -245,7 +246,7 @@ export const CARDS: Record<string, { kicker: string; title: string; subtitle: st
   site: { kicker: subjectAfter("每日", "精选"), title: SITE.tagline, subtitle: SITE.description },
   all: { kicker: subjectAfter("全部", "动态"), title: "所有信源的最新动态，一站看完", subtitle: "按时间汇总各信源的最新动态，可按类别与标签筛选。" },
   hot: { kicker: "热点榜", title: "过去 48 小时，大家在讨论什么", subtitle: "热度指数、趋势与组成热度的公开来源。", accent: "hot" },
-  daily: { kicker: withSubject("日报"), title: subjectAfter(`每天 ${spokenTime(EDITION_TIMES.daily)}，一份读得完的`, "日报"), subtitle: `${subjectAfter("前一天值得关注的", "动态")}。` },
+  daily: { kicker: withSubject("日报"), title: subjectAfter(`每天 ${EDITION_TIMES.daily.map(spokenTime).join("、")}，一份读得完的`, "日报"), subtitle: `${subjectAfter("前一天值得关注的", "动态")}。` },
   weekly: { kicker: withSubject("周报"), title: `一周${REPORTS.entry.noun}，一次看清`, subtitle: "本周的主线、重要发布与值得回看的讨论。" },
   monthly: { kicker: withSubject("月报"), title: "一个月的变化", subtitle: "月度主线与关键事件回顾。" },
   about: { kicker: "关于", title: `关于 ${SITE.name}`, subtitle: SITE.description },

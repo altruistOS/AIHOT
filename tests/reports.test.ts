@@ -21,8 +21,10 @@ after(async () => {
 });
 
 test("a late run writes the issue that was due, not today's", () => {
-  assert.equal(dueDaily(editionAt("daily", "2026-09-29", 6)), "2026-09-29");
-  assert.equal(dueDaily(editionAt("daily", "2026-09-30", -60)), "2026-09-29", "the 29th's run delayed until just before the next issue");
+  assert.equal(dueDaily(editionAt("daily", "2026-09-29", 6)), "2026-09-29-19", "the day's last edition once its time passes");
+  assert.equal(dueDaily(editionAt("daily", "2026-09-29", -7 * 3600 + 6)), "2026-09-29-12", "the noon edition after noon");
+  assert.equal(dueDaily(editionAt("daily", "2026-09-29", -12 * 3600 - 60)), "2026-09-28-19", "before the first edition: yesterday's last one");
+  assert.equal(dueDaily(editionAt("daily", "2026-09-30", -12 * 3600 - 60)), "2026-09-29-19", "the 29th's run delayed until just before the next issue");
   assert.equal(dueWeekly(editionAt("weekly", "2026-09-28")), "2026-W39");
   assert.equal(dueWeekly(editionAt("weekly", "2026-10-05", -60)), "2026-W39", "Monday before its edition time: the next week is not due yet");
   assert.equal(dueWeekly(editionAt("weekly", "2026-10-05", 60)), "2026-W40");

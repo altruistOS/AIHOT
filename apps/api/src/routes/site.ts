@@ -186,7 +186,7 @@ export function registerSite(app: FastifyInstance) {
 
   app.get("/api/site/reports/:kind/navigation/:key", siteHandler(async (req, reply) => {
     const { kind, key } = req.params as { kind: string; key: string };
-    if (!["daily", "weekly", "monthly"].includes(kind) || !/^\d{4}-(\d{2}(-\d{2})?|W\d{2})$/.test(key)) return sendProblem(req, reply, { status: 404, code: "not_found", detail: "report not found" });
+    if (!["daily", "weekly", "monthly"].includes(kind) || !/^\d{4}-(\d{2}(-\d{2}(-\d{2})?)?|W\d{2})$/.test(key)) return sendProblem(req, reply, { status: 404, code: "not_found", detail: "report not found" });
     const body: ReportNavigationResponse = { items: await loadReportNavigation(kind as ReportKind, key) };
     return sendJsonWithEtag(req, reply, body, { etagPrefix: "report-navigation", cacheControl: "public, max-age=60, s-maxage=60" });
   }));
@@ -200,7 +200,7 @@ export function registerSite(app: FastifyInstance) {
 
   app.get("/api/site/reports/:kind/:key", siteHandler(async (req, reply) => {
     const { kind, key } = req.params as { kind: string; key: string };
-    if (!["daily", "weekly", "monthly"].includes(kind) || !/^\d{4}-(\d{2}(-\d{2})?|W\d{2})$/.test(key)) {
+    if (!["daily", "weekly", "monthly"].includes(kind) || !/^\d{4}-(\d{2}(-\d{2}(-\d{2})?)?|W\d{2})$/.test(key)) {
       return sendProblem(req, reply, { status: 404, code: "not_found", detail: "report not found" });
     }
     const data = await loadReport(kind as ReportKind, key);

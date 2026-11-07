@@ -106,7 +106,11 @@ export function issueNumber(index: ReportNavigationEntry[], key: string): number
 
 /** The masthead's date block: a large figure and two small lines beside it. */
 export function dateMark(kind: ReportKind, key: string): { figure: string; top: string; bottom: string } {
-  if (kind === "daily") return { figure: key.slice(8, 10), top: `${key.slice(0, 4)} 年 ${Number(key.slice(5, 7))} 月`, bottom: beijingWeekday(key) };
+  if (kind === "daily") {
+    const date = key.slice(0, 10);
+    const hh = key.length > 10 ? ` ${key.slice(11)}:00 刊` : "";
+    return { figure: key.slice(8, 10), top: `${key.slice(0, 4)} 年 ${Number(key.slice(5, 7))} 月`, bottom: `${beijingWeekday(date)}${hh}` };
+  }
   if (kind === "weekly") {
     const { start, end } = isoWeekRange(key)!;
     return { figure: key.slice(6), top: `${key.slice(0, 4)} 年第 ${Number(key.slice(6))} 周`, bottom: `${start.slice(5).replace("-", ".")} — ${end.slice(5).replace("-", ".")}` };

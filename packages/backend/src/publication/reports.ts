@@ -457,9 +457,10 @@ export interface DailyNote {
 
 /** The v1 daily (its fields never change) and the notes the Agent answer adds to it. */
 export async function dailyWithNotes(date: string | "latest") {
+  // 显式日期取该日期最新一期（多期日报的期号 key 是「日期-时」）。
   const [r] = date === "latest"
     ? await sql<ReportRow[]>`SELECT kind, key, window_start, window_end, content, generated_at FROM reports WHERE kind = 'daily' ORDER BY key DESC LIMIT 1`
-    : await sql<ReportRow[]>`SELECT kind, key, window_start, window_end, content, generated_at FROM reports WHERE kind = 'daily' AND key = ${date}`;
+    : await sql<ReportRow[]>`SELECT kind, key, window_start, window_end, content, generated_at FROM reports WHERE kind = 'daily' AND (key = ${date} OR key LIKE ${date + "-%"}) ORDER BY key DESC LIMIT 1`;
   if (!r) return null;
   const c = r.content;
   const raw = [...(c.sections ?? []).flatMap((s: any) => s.items ?? []), ...(c.flashes ?? [])];

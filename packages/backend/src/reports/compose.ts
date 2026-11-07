@@ -9,7 +9,7 @@ import { PLAIN_TERMS, RELEASE } from "@aihot/industry/taxonomy";
 import { promptText, promptVersion } from "../editorial/prompts.ts";
 import { modelFor } from "../editorial/models.ts";
 import { ENTITIES, isRelease } from "../editorial/vocabulary.ts";
-import { addDays, beijingAt, beijingDate, beijingTime, isoWeekLabel, isoWeekRange, monthRange } from "@aihot/contracts/time";
+import { addDays, beijingAt, beijingDate, beijingTime, dailyKey, isoWeekLabel, isoWeekRange, monthRange, parseDailyKey } from "@aihot/contracts/time";
 import { sql } from "../db.ts";
 import { logError } from "../lib/log-error.ts";
 import { chatJson } from "../providers/llm.ts";
@@ -86,18 +86,23 @@ function windowPoint(at: Date): string {
  * the editors judged with nothing new in it still has its issue: no entries, and a lead that says so
  * (REPORTS.quiet).
  */
-export async function composeDaily(date: string, reason?: string): Promise<{ key: string; entries: number }> {
-  const previous = await savedReport("daily", date);
-  if (previous && reason === undefined) return { key: date, entries: previous.entries };
-  const end = beijingAt(date, EDITION_TIMES.daily);
+export async function composeDaily(key: string, reason?: string): Promise<{ key: string; entries: number }> {
+  const previous = await savedReport("daily", key);
+  if (previous && reason === undefined) return { key, entries: previous.entries };
+  // 期号 key：「日期-时」（多期日报）或旧的无后缀日期（旧整日刊，按当天最后一期的时间收尾）。
+  const parsed = parseDailyKey(key);
+  if (!parsed) throw new Error(`daily ${key}: bad key`);
+  const time = parsed.hh ? `${parsed.hh}:00` : EDITION_TIMES.daily.at(-1)!;
+  const end = beijingAt(parsed.date, time);
   const start = new Date(end.getTime() - 86400000);
-  const edition = await dailyEdition(date, start, end);
+  // Pass the full key: dailyMemory treats every earlier issue (including this date's earlier editions) as carried.
+  const edition = await dailyEdition(key, start, end);
   // Nothing judged in the window is a failure upstream, not a quiet day: the run fails and is caught up later.
-  if (edition.entries.length === 0 && edition.stats.judgedReports === 0) throw new Error(`daily ${date}: nothing judged in its window`);
+  if (edition.entries.length === 0 && edition.stats.judgedReports === 0) throw new Error(`daily ${key}: nothing judged in its window`);
   const issue = arrangeDaily(edition.entries);
   const [lead, ...rest] = issue.main;
   const content = {
-    date,
+    date: parsed.date,
     lead: lead
       ? { title: lead.entry.title, leadParagraph: lead.entry.summary }
       : { title: REPORTS.quiet.title, leadParagraph: REPORTS.quiet.paragraph.replace("{start}", windowPoint(start)).replace("{end}", windowPoint(end)) },
@@ -112,8 +117,8 @@ export async function composeDaily(date: string, reason?: string): Promise<{ key
     windowEnd: end.toISOString(),
     generator: { version: REPORT_VERSION, ...edition.stats, ...issue.stats },
   };
-  await saveReport("daily", date, start, end, content, reason, null, []);
-  return { key: date, entries: issue.main.length };
+  await saveReport("daily", key, start, end, content, reason, null, []);
+  return { key, entries: issue.main.length };
 }
 
 /** A weekly's or monthly's size: the events it carries, chosen and ordered by rule. */
@@ -194,8 +199,8 @@ async function composePeriod(kind: "weekly" | "monthly", key: string, startDate:
   const previous = await savedReport(kind, key);
   if (previous && reason === undefined) return { key, entries: previous.entries };
   // The dailies' windows run from the edition time the day before the first to that time on the last.
-  const start = beijingAt(addDays(startDate, -1), EDITION_TIMES.daily);
-  const end = beijingAt(endDateInclusive, EDITION_TIMES.daily);
+  const start = beijingAt(addDays(startDate, -1), EDITION_TIMES.daily.at(-1)!);
+  const end = beijingAt(endDateInclusive, EDITION_TIMES.daily.at(-1)!);
   const { entries, issues } = await periodEntries(startDate, endDateInclusive);
   const top = entries.slice(0, PERIOD_EVENTS[kind]);
   if (!top.length) throw new Error(`${kind} ${key}: no daily entries in the period`);
@@ -257,10 +262,24 @@ export async function composeMonthly(label: string, reason?: string) {
   return composePeriod("monthly", label, range.start, range.end, reason);
 }
 
-/** The newest daily due by `now`: today's from its edition time (Beijing), yesterday's before. */
+/** The newest daily due by `now`: today's latest edition past its edition time (Beijing), yesterday's last one before. */
 export function dueDaily(now = new Date()): string {
   const today = beijingDate(now);
-  return beijingTime(now) >= EDITION_TIMES.daily ? today : addDays(today, -1);
+  const t = beijingTime(now);
+  for (let i = EDITION_TIMES.daily.length - 1; i >= 0; i--) if (t >= EDITION_TIMES.daily[i]!) return dailyKey(today, EDITION_TIMES.daily[i]!);
+  return dailyKey(addDays(today, -1), EDITION_TIMES.daily.at(-1)!);
+}
+
+/** The next daily key after `key`: the date's next edition time, else the next date's first one. */
+export function nextDailyKey(key: string): string {
+  const parsed = parseDailyKey(key);
+  if (!parsed) throw new Error(`daily ${key}: bad key`);
+  const times = EDITION_TIMES.daily;
+  if (parsed.hh) {
+    const idx = times.findIndex((t) => t.slice(0, 2) === parsed.hh);
+    if (idx >= 0 && idx < times.length - 1) return dailyKey(parsed.date, times[idx + 1]!);
+  }
+  return dailyKey(addDays(parsed.date, 1), times[0]!);
 }
 
 /** The newest weekly due by `now`: the last complete ISO week from its edition time on Monday, the one before until then. */
@@ -296,7 +315,7 @@ export async function composeDueReports(now = new Date(), limit = 8): Promise<{ 
   const generated: string[] = [];
   const failed: string[] = [];
   const kinds: Array<{ kind: ReportKind; due: string; next: (k: string) => string; end: (k: string) => string; compose: (k: string) => Promise<unknown> }> = [
-    { kind: "daily", due: dueDaily(now), next: (k) => addDays(k, 1), end: (k) => k, compose: composeDaily },
+    { kind: "daily", due: dueDaily(now), next: nextDailyKey, end: (k) => k, compose: composeDaily },
     { kind: "weekly", due: dueWeekly(now), next: nextWeek, end: (k) => isoWeekRange(k)!.end, compose: composeWeekly },
     { kind: "monthly", due: dueMonthly(now), next: nextMonth, end: (k) => monthRange(k)!.end, compose: composeMonthly },
   ];

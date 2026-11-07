@@ -42,7 +42,7 @@ function fillPlaceholders(text: string, json: boolean): string {
     description: SITE.description,
     tagline: SITE.tagline,
     locale: SITE.locale,
-    dailyTime: EDITION_TIMES.daily,
+    dailyTime: EDITION_TIMES.daily.join("、"),
     weeklyTime: EDITION_TIMES.weekly,
     monthlyTime: EDITION_TIMES.monthly,
     version: PUBLIC_INTERFACE_VERSION,

@@ -78,3 +78,14 @@ export function isValidDate(date: string): boolean {
   const t = Date.parse(`${date}T00:00:00Z`);
   return Number.isFinite(t) && new Date(t).toISOString().slice(0, 10) === date;
 }
+
+/** 日报一期的时间部分：多期日报的期号 key 是「日期-时」（2026-10-14-19），整日旧刊是无后缀的日期。 */
+export function parseDailyKey(key: string): { date: string; hh: string | null } | null {
+  const m = /^(\d{4}-\d{2}-\d{2})(?:-(\d{2}))?$/.exec(key);
+  return m ? { date: m[1]!, hh: m[2] ?? null } : null;
+}
+
+/** 日报期号 key：北京日期 + 两位小时后缀。 */
+export function dailyKey(date: string, time: string): string {
+  return `${date}-${time.slice(0, 2)}`;
+}

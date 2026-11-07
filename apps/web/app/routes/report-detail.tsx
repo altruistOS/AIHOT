@@ -16,7 +16,7 @@ export { pageHeaders as headers } from "../lib/api.server";
 export const { clientLoader, shouldRevalidate } = pageReuse<typeof loader>();
 
 const PATTERN: Record<ReportKind, RegExp> = {
-  daily: /^\d{4}-\d{2}-\d{2}$/,
+  daily: /^\d{4}-\d{2}-\d{2}(-\d{2})?$/,
   weekly: /^\d{4}-W\d{2}$/,
   monthly: /^\d{4}-\d{2}$/,
 };

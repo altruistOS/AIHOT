@@ -166,7 +166,7 @@ export async function candidates(start: Date, end: Date): Promise<Candidate[]> {
  */
 export async function periodEntries(startDate: string, endDate: string): Promise<{ entries: Candidate[]; issues: number }> {
   const issues = await sql<{ key: string; content: Record<string, any> }[]>`
-    SELECT key, content FROM reports WHERE kind = 'daily' AND key >= ${startDate} AND key <= ${endDate} ORDER BY key`;
+    SELECT key, content FROM reports WHERE kind = 'daily' AND key >= ${startDate} AND key < ${addDays(endDate, 1)} ORDER BY key`;
   const carried = issues.flatMap((issue) => (issue.content.sections ?? []).flatMap((s: any) => (s.items ?? []).filter((it: any) => it.itemId).map((it: any) => ({
     id: String(it.itemId),
     key: issue.key,
@@ -210,7 +210,7 @@ export function citedIn(content: Record<string, any>): Array<Record<string, any>
  */
 export async function dailyMemory(date: string): Promise<{ keys: Set<string>; stories: Map<number, { key: string; title: string }> }> {
   const issues = await sql<{ key: string; content: Record<string, any> }[]>`
-    SELECT key, content FROM reports WHERE kind = 'daily' AND key < ${date} AND key >= ${addDays(date, -MEMORY_DAYS)} ORDER BY key DESC`;
+    SELECT key, content FROM reports WHERE kind = 'daily' AND key < ${date} AND key >= ${addDays(date.slice(0, 10), -MEMORY_DAYS)} ORDER BY key DESC`;
   const keys = new Set<string>();
   const cited = new Map<string, { key: string; title: string }>();
   for (const issue of issues) {

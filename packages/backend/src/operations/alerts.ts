@@ -6,7 +6,7 @@
 // A site's responder (modules.ts) filters findings for the owner, preserving repeat and recovery
 // tracking for messages it returns and replacing the default digest policy.
 // Delivery goes through sendAlert (ops chat, internal-chat fallback; off unless FEISHU_INTERNAL_ENABLED).
-import { addDays, beijingAt, beijingDate, isValidDate } from "@aihot/contracts/time";
+import { addDays, beijingAt, beijingDate, isValidDate, parseDailyKey } from "@aihot/contracts/time";
 import { ALERTS, EDITION_TIMES } from "@aihot/site";
 import { sql } from "../db.ts";
 import { beijingDay, beijingStamp, duration, formatAlert, formatRecovery, sendAlert, type Finding, type Level } from "../notify/feishu.ts";
@@ -266,10 +266,12 @@ interface AlertState {
 }
 
 const DAILY_PREFIX = "report.daily:";
-const dailyDate = (key: string) => key.startsWith(DAILY_PREFIX) && isValidDate(key.slice(DAILY_PREFIX.length))
+const dailyDate = (key: string) => key.startsWith(DAILY_PREFIX) && parseDailyKey(key.slice(DAILY_PREFIX.length))
   ? key.slice(DAILY_PREFIX.length) : undefined;
 /** Missing dailies are looked for, and announced ones followed, over the last seven Beijing calendar days. */
 const dailyScanFrom = (now: number) => addDays(beijingDate(now), -6);
+/** 多期日报上线的北京日期：此前的期号是整日 key。 */
+const MULTI_EDITION_FROM = "2026-10-14";
 
 async function alertState(): Promise<AlertState> {
   const [row] = await sql<{ value: AlertState }[]>`SELECT value FROM settings WHERE key = 'alerts.state'`;
@@ -295,19 +297,28 @@ async function dailyReportFindings(now: number): Promise<Finding[]> {
   const start = starts[0] ?? today;
   // New gaps and announced editions alike are followed for the scan window; checkAlerts closes older ones.
   const from = dailyScanFrom(now);
-  const dates = new Set(Object.keys(state).map(dailyDate).filter((date): date is string => !!date && date >= from));
+  // From MULTI_EDITION_FROM each edition time has its own issue (key 日期-时); earlier days keep the whole-day key.
+  const expected: string[] = [];
   for (let date = from; date <= today; date = addDays(date, 1)) {
-    if (date >= start) dates.add(date);
+    if (date < start) continue;
+    if (date < MULTI_EDITION_FROM) {
+      if (now >= beijingAt(date, EDITION_TIMES.daily.at(-1)!).getTime() + 2 * 3600_000) expected.push(date);
+      continue;
+    }
+    for (const t of EDITION_TIMES.daily) if (now >= beijingAt(date, t).getTime() + 2 * 3600_000) expected.push(`${date}-${t.slice(0, 2)}`);
   }
-  const overdue = [...dates].filter(date => now >= beijingAt(date, EDITION_TIMES.daily).getTime() + 2 * 3600_000).sort();
-  if (!overdue.length) return [];
-  const published = new Set((await sql<{ key: string }[]>`SELECT key FROM reports WHERE kind = 'daily' AND key IN ${sql(overdue)}`).map(r => r.key));
-  return overdue.filter(date => !published.has(date)).map(date => ({
-    key: `${DAILY_PREFIX}${date}`, level: "now",
-    title: `${date} 的日报还没生成`, impact: `读者看不到 ${date} 的日报`,
+  expected.sort();
+  if (!expected.length) return [];
+  const published = new Set((await sql<{ key: string }[]>`SELECT key FROM reports WHERE kind = 'daily' AND key >= ${from}`).map(r => r.key));
+  const isPublished = (key: string) => key.length > 10
+    ? published.has(key) || published.has(key.slice(0, 10))
+    : published.has(key) || [...published].some(k => k.startsWith(`${key}-`));
+  return expected.filter(key => !isPublished(key)).map(key => ({
+    key: `${DAILY_PREFIX}${key}`, level: "now",
+    title: `${key} 的日报还没生成`, impact: `读者看不到 ${key} 的日报`,
     heals: "尚未补齐；需查看运行记录确认是否需要人工补做",
     action: "尽快发起一次维护处理",
-    detail: `reports daily ${date} 不存在；看 reports.compose 的运行记录`,
+    detail: `reports daily ${key} 不存在；看 reports.compose 的运行记录`,
   }));
 }
 
