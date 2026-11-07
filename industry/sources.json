@@ -599,6 +599,86 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-arxiv-cs-dc",
+      "name": "arXiv cs.DC",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.arxiv.org/rss/cs.DC",
+        "_aihot": {
+          "initialBackfillLimit": 15
+        }
+      },
+      "tier": "T2",
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "论文",
+        "存储系统"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-arxiv-cs-ar",
+      "name": "arXiv cs.AR",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.arxiv.org/rss/cs.AR",
+        "_aihot": {
+          "initialBackfillLimit": 15
+        }
+      },
+      "tier": "T2_SPEC",
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "论文",
+        "体系结构"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-arxiv-cs-et",
+      "name": "arXiv cs.ET",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.arxiv.org/rss/cs.ET",
+        "_aihot": {
+          "initialBackfillLimit": 15
+        }
+      },
+      "tier": "T2_SPEC",
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "论文",
+        "新型介质"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-thu-quantum",
+      "name": "清华大学量子软件研究中心",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://quantum.cs.tsinghua.edu.cn/index.xml",
+        "_aihot": {
+          "initialBackfillLimit": 20
+        }
+      },
+      "tier": "T2_SPEC",
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "量子",
+        "实验室"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
     }
   ]
 }
